@@ -20,11 +20,45 @@ namespace CarRentalApi.Models
             _context = context;
         }
 
-        // GET: api/Cars
+        //// GET: api/Cars
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Car>>> GetCar()
+        //{
+        //    return await _context.Car.ToListAsync();
+        //}
+
+        // GET: api/Cars?rented
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Car>>> GetCar()
+        public async Task<ActionResult<IEnumerable<Car>>> GetCar([FromQuery]bool? rented)
         {
-            return await _context.Car.ToListAsync();
+            //return await _context.Car.ToListAsync();
+            var CarList = await _context.Car.ToListAsync();
+
+            if (rented == null)
+            {
+                return CarList;
+            }
+
+            var CarsRentedOrNot = new List<Car>();
+            bool want_rented = (bool)rented;
+            foreach (Car theCar in CarList)
+            {
+                if (want_rented)
+                {
+                    if (theCar.LocationId == null)
+                    {
+                        CarsRentedOrNot.Add(theCar);
+                    }
+                }
+                else
+                {
+                    if (theCar.LocationId != null)
+                    {
+                        CarsRentedOrNot.Add(theCar);
+                    }
+                }
+            }
+            return CarsRentedOrNot;
         }
 
         // GET: api/Cars/5
@@ -50,6 +84,100 @@ namespace CarRentalApi.Models
             {
                 return BadRequest();
             }
+
+            _context.Entry(car).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CarExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // PUT: api/Cars/5/carrental
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}/carrental")]
+        public async Task<IActionResult> PutCarRental(int id, Car car)
+        {
+            if (id != car.Id)
+            {
+                return BadRequest();
+            }
+
+            var CarList = await _context.Car.ToListAsync();
+            Car? moddedCar = CarList.Find(x => x.Id == id);
+
+            if (moddedCar == null)
+            {
+                return BadRequest();
+            }
+
+            if (moddedCar.LocationId == null)
+            {
+                return BadRequest("The car is already rented you twit!");
+            }
+
+            moddedCar.LocationId = null;
+            car = moddedCar;
+
+            _context.Entry(car).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CarExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        //PUT: api/Cars/5/Returnal
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}/carreturnal/{locationId}")]
+        public async Task<IActionResult> PutCarReturnal(int id, Car car, int locationId)
+        {
+            if (id != car.Id)
+            {
+                return BadRequest();
+            }
+
+            var CarList = await _context.Car.ToListAsync();
+            Car? moddedCar = CarList.Find(x => x.Id == id);
+
+            if (moddedCar == null)
+            {
+                return BadRequest();
+            }
+
+            if (moddedCar.LocationId != null)
+            {
+                return BadRequest("The car cannot be returned since it ain't rented you clown!");
+            }
+
+            moddedCar.LocationId = locationId;
+            car = moddedCar;
 
             _context.Entry(car).State = EntityState.Modified;
 

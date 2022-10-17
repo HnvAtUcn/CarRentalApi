@@ -15,8 +15,8 @@ namespace CarRentalApi.Models
         public string? LicenseNo { get; set; }
         public int ColorId { get; set; }
 
-        public virtual Color Color { get; set; } = null!;
-        public virtual FuelType FuelType { get; set; } = null!;
-        public virtual Location? Location { get; set; }
+        //public virtual Color Color { get; set; } = null!;
+        //public virtual FuelType FuelType { get; set; } = null!;
+        //public virtual Location? Location { get; set; }
     }
 }
