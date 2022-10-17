@@ -43,21 +43,21 @@ namespace CarRentalApi.Models
 
                 entity.Property(e => e.LicenseNo).HasMaxLength(50);
 
-                entity.HasOne(d => d.Color)
-                    .WithMany(p => p.Cars)
-                    .HasForeignKey(d => d.ColorId)
-                    .HasConstraintName("FK_Car_Color");
+                //entity.HasOne(d => d.Color)
+                //    .WithMany(p => p.Cars)
+                //    .HasForeignKey(d => d.ColorId)
+                //    .HasConstraintName("FK_Car_Color");
 
-                entity.HasOne(d => d.FuelType)
-                    .WithMany(p => p.Cars)
-                    .HasForeignKey(d => d.FuelTypeId)
-                    .HasConstraintName("FK_Car_FuelType");
+                //entity.HasOne(d => d.FuelType)
+                //    .WithMany(p => p.Cars)
+                //    .HasForeignKey(d => d.FuelTypeId)
+                //    .HasConstraintName("FK_Car_FuelType");
 
-                entity.HasOne(d => d.Location)
-                    .WithMany(p => p.Cars)
-                    .HasForeignKey(d => d.LocationId)
-                    .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("FK_Car_Location");
+                //entity.HasOne(d => d.Location)
+                //    .WithMany(p => p.Cars)
+                //    .HasForeignKey(d => d.LocationId)
+                //    .OnDelete(DeleteBehavior.SetNull)
+                //    .HasConstraintName("FK_Car_Location");
             });
 
             modelBuilder.Entity<Color>(entity =>
